@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 
-// --- Helper component to display the colored dots (Unchanged) ---
+// Helper component to display the colored dots (Unchanged)
 const TaskIndicatorDots = ({ indicators }) => {
     if (!indicators) return null;
     return (
@@ -18,14 +18,13 @@ function Calendar() {
     const navigate = useNavigate();
     const location = useLocation();
 
-    // State management for UI and navigation (Unchanged)
+    // All state and useEffect hooks are unchanged
     const [showWelcome, setShowWelcome] = useState(location.state?.fromLogin || false);
     const [showCalendar, setShowCalendar] = useState(!showWelcome);
     const [currentDate, setCurrentDate] = useState(new Date());
     const [selectedDay, setSelectedDay] = useState(null);
     const [taskIndicators, setTaskIndicators] = useState({});
 
-    // All useEffect hooks for welcome message, selected day, and data fetching (Unchanged)
     useEffect(() => {
         if (showWelcome) {
             const timer = setTimeout(() => { setShowWelcome(false); setShowCalendar(true); }, 1200);
@@ -49,7 +48,9 @@ function Calendar() {
             if (boardsArray) {
                 const indicators = {};
                 for (const board of boardsArray) {
-                    const date = board.id; const columns = board.columns; const priorities = new Set();
+                    const date = board.id;
+                    const columns = board.columns;
+                    const priorities = new Set();
                     if (columns && Array.isArray(columns)) {
                         columns.forEach(column => {
                             if (column.tasks && Array.isArray(column.tasks)) {
@@ -69,7 +70,7 @@ function Calendar() {
         return () => { window.removeEventListener('focus', fetchAllBoardsData); };
     }, []);
 
-    // --- All Helper Functions (Unchanged) ---
+    // All helper functions and event handlers are unchanged
     const getDaysInMonth = (year, month) => new Date(year, month + 1, 0).getDate();
     const getFirstDayOfMonth = (year, month) => new Date(year, month, 1).getDay();
     const today = new Date();
@@ -86,13 +87,7 @@ function Calendar() {
         const dateString = `${year}-${month}-${dayString}`;
         navigate(`/board/${dateString}`);
     };
-
-    // --- NEW: Sign Out Handler ---
-    const handleSignOut = () => {
-        // In a real app with full authentication, you would also call supabase.auth.signOut() here.
-        // For our MVP, simply navigating to the root page is perfect.
-        navigate('/');
-    };
+    const handleSignOut = () => { navigate('/'); };
 
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
@@ -102,27 +97,24 @@ function Calendar() {
     ];
 
     return (
-        // --- FIX: Add 'relative' to the main container to position the sign-out button correctly ---
         <div className="relative min-h-screen w-full bg-slate-900 flex flex-col items-center justify-center p-4">
-            
-            {/* --- NEW: Sign Out Button --- */}
-            <button
-                onClick={handleSignOut}
-                className="absolute top-6 right-6 bg-red-600 hover:bg-red-700 text-white font-bold px-4 py-2 rounded-lg transition-colors z-10"
-                aria-label="Sign Out"
-            >
+            <button onClick={handleSignOut} className="absolute top-6 right-6 bg-red-600 hover:bg-red-700 text-white font-bold px-4 py-2 rounded-lg transition-colors z-10" aria-label="Sign Out">
                 Sign Out
             </button>
-
             {showWelcome && <div className="text-center animate-fade-out"><h1 className="text-white font-bold text-8xl">Welcome!</h1></div>}
-            
             {showCalendar && (
                 <div className="relative bg-slate-800 border border-slate-700/50 rounded-lg p-6 w-full max-w-3xl animate-fade-in shadow-2xl">
-                    <div className="flex justify-between items-center mb-6">
+                    <div className="flex justify-between items-center mb-4"> {/* Adjusted margin */}
                         <button onClick={goToPrevMonth} className="p-2 rounded-full text-white text-2xl font-bold hover:bg-slate-700 transition-colors" aria-label="Previous month">←</button>
                         <h2 className="text-white text-2xl font-bold">{currentDate.toLocaleString('default', { month: 'long', year: 'numeric' })}</h2>
                         <button onClick={goToNextMonth} className="p-2 rounded-full text-white text-2xl font-bold hover:bg-slate-700 transition-colors" aria-label="Next month">→</button>
                     </div>
+
+                    {/* --- NEW: Instructional Text --- */}
+                    <p className="text-center text-slate-400 text-sm mb-6">
+                        Click on any date to view or add tasks.
+                    </p>
+
                     <div className="grid grid-cols-7 gap-2 text-center">
                         {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => <div key={day} className="text-slate-400 font-semibold text-sm py-2">{day}</div>)}
                         {calendarDays.map((day, index) => {
