@@ -1,6 +1,6 @@
-// src/utils/boardUtils.js
-export const createNewBoardData = (date) => ({
+export const createNewBoardData = (date, userId) => ({
     id: date,
+    user_id: userId,
     columns: [
         { id: 'backlog', title: 'Backlog', tasks: [] },
         { id: 'todo', title: 'To-Do', tasks: [] },

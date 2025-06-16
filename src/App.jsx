@@ -5,17 +5,21 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import SignUp from './components/SignUp';
 import Calendar from './components/Calendar';
 import KanbanTaskBoard from './components/KanbanTaskBoard';
+// --- NEW: Import the AuthProvider ---
+import { AuthProvider } from './components/AuthContext';
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        {/* Use the component names exactly as you provided */}
-        <Route path="/" element={<SignUp />} />
-        <Route path="/calendar" element={<Calendar />} />
-        <Route path="/board/:date" element={<KanbanTaskBoard />} />
-      </Routes>
-    </BrowserRouter>
+    // --- NEW: Wrap everything in AuthProvider ---
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<SignUp />} />
+          <Route path="/calendar" element={<Calendar />} />
+          <Route path="/board/:date" element={<KanbanTaskBoard />} />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
 
